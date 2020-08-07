@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Aug  5 11:41:47 2020
+
+@author: akar
+
+"""
+#Nouveautés de v3 :
+#On essaie d'optimiser le test dans la sous-boucle pour ne pas continuer une
+#fois que le flag test a été modifié pour une valeur de n
+#Et accessoirement, on peut aussi virer les pairs... et multiples de trois..
+#au final on ferait mieux de trouver un algorythme plus évolué...
+#module math pour la racine carrée
+import math
+
+#Constante de Brun (pour bien faire il faudrait créer un module externe math2
+#avec d'autres constantes, etc. math ne contient que pi et e)
+brun = 1.9021605831
+
+#On demande à l'utilisateur de rentrer un rang pour faire les recherches:
+limstr = input("Nous allons chercher les nombres "
+            "premiers entre 1 et n. Veuillez rentrer la valeur de n :\t")
+lim = int(limstr)
+
+#Par commodité on pose cette variable
+i = lim +1
+
+#on initialise la liste des nombres premiers avec 2
+list_prime_numbers = [2]
+
+#Boucle créant la liste:
+#une première boucle parcourt n (impair) sur l'intervale choisi
+#dans une sous-boucle, on cherche un diviseur de n parmi les nombres premiers
+#compris entre 3 et racine carrée de n
+#s'il y en a, on change la valeur test ; si la valeur test n'est pas modifiée à
+#la fin de la sous-boucle on rajoute n à la liste des nombres premiers
+for n in range(3, i, 2):
+    test = 0
+    for p in range(3, (int(math.sqrt(n)) + 1), 2):
+        if p in list_prime_numbers:
+            if n % p == 0:
+                test = 1
+    if test == 0:
+        if n not in list_prime_numbers:   #pourquoi j'ai des doublons sans cette ligne ?
+            list_prime_numbers.append(n)
+
+#On ordonne la liste
+list_prime_numbers.sort()
+
+pin = len(list_prime_numbers)
+
+#On crée l'index des nombres premiers avec un dictionnaire:
+index_prime_numbers = dict()
+
+for n in range(0, pin):
+    index_prime_numbers[n + 1] = list_prime_numbers[n]
+
+##Affichage des résultats
+#Plus tard, donner le choix entre afficher la liste brute, l'index brut ou par
+#ligne, etc. Voir autres idées à la fin
+
+print(f"\n\nIl y a {pin} nombres premiers compris entre 1 et {lim}.")
+print("En voici la liste indexée :")
+for n, p in index_prime_numbers.items():
+    print(f"\t{n}: {p}")
+
+print(f"\nPour votre gouverne,le {(pin // 2)}ème nombre premier est"
+      f" {list_prime_numbers[((pin // 2) - 1)]}")
+
+#Listes des nombres premiers jumeaux (une liste de doublets et une liste brute)
+
+list_twins = []
+list_raw_twins = []
+
+for n in range(0, (pin - 1)):
+    if list_prime_numbers[n + 1] - list_prime_numbers[n] == 2:
+        list_twins.append((list_prime_numbers[n], list_prime_numbers[n + 1]))
+        list_raw_twins.append(list_prime_numbers[n])
+        list_raw_twins.append(list_prime_numbers[n + 1])
+
+#Nombre de couples
+ntwins = len(list_twins)
+
+#Si lim > 7 il faut supprimer une fois 5, inclus deux fois dans la liste brute
+#car il participe de deux doublets
+if lim > 7:
+    del list_raw_twins[1]
+
+#Affichage des données concernant les jumeaux :
+print(f"\n\nIl y a {ntwins} couples de nombres premiers jumeaux inférieurs "
+      f"ou égaux à {lim}.\n"
+      "Voici la liste de ces doublets :\n"
+      f"{list_twins}\n"
+      "\nEt voici leur liste brute :\n"
+      f"{list_raw_twins}")
+
+#Série de leur somme inverse
+sigma_twins_inv = 0
+
+for n in range(0, (len(list_raw_twins) - 1)):
+    sigma_twins_inv = sigma_twins_inv + (1 / (list_raw_twins[n]))
+
+#calcul des erreurs et marges
+sigma_dif_brun = sigma_twins_inv - brun
+sigma_twins_error = abs((sigma_dif_brun / brun))
+
+print(f"\n\nLa somme de leur série inverse vaut: {sigma_twins_inv},\n"
+      f"soit un écart d'environ {sigma_dif_brun} "
+      f"par rappport à la constante de Brun \n(qui vaut ~= {brun}),\n"
+      f"soit une erreur de {sigma_twins_error * 100} %")
+
+#commentaires des résultats sur les jumeaux
+if sigma_twins_error > 0.4:
+    print("C'est vraiment nul !")
+elif sigma_twins_error > 0.2:
+    print("C'est pas terrible !")
+elif sigma_twins_error > 0.1:
+    print("C'est pas mal !")
+elif sigma_twins_error > 0.05:
+    print("De mieux en mieux...")
+else:
+    print("Brilliant !")
+
+#print(f"Pour vérification: {index_prime_numbers[(len(prime_numbers) // 2)]}")
+
+
+#A faire ensuite:
+#Puisque la liste jusqu'à 100_000 est déjà connue, il est inutile de refaire
+#ces calculs, il faut les reprendre pour calculer d'autres valeurs et agrandir
+# la liste.
+#Pour optimiser: déterminer quand index < racine de n pour choisir la meilleure boucle < BOF
+#Mieux : essayer de mettre en oeuvre d'autres algorythmes plus efficaces
+# Calculer les temps de calcul !
+#Faire une liste des nombres premiers jumeaux (qui se trouvent à une distance de 2)
+#Enregistrer toutes les valeurs calculées dans un fichier (ou seulement conserver la plus grosse)
+#ou mieux: laisser le choix à l'utilisateur, en lui demandant de saisir un
+# nom de fichier tout en en proposant un par défaut
+#laisser à l'utilisateur la possibilité de parcourir la liste / l'index 
+#gardé dans un fichier temporaire
+#Calculer la valeur de la somme de la série inverse des jumeaux, la comparer
+#avec la constante de Brun.
+#Faire des statistiques + graphiques, sur la somme des nbs premiers, leur série inverse, idem
+# pour les jumeaux, comparer avec les valeurs pertinentes...
+#49_991, 49_993 et 49_999 sont premiers
+
+#Amusements:
+"""
+for i, j in index_prime_numbers.items():
+    print(f"Le nombre premier n° {i} est {j}")
+"""  
