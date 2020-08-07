@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Aug  5 11:41:47 2020
+
+@author: akar
+
+"""
+#module math pour la racine carrée
+import math
+#On fixe la limite supérieure pour rechercher des nbs premiers
+#Plus tard en faire un input utilisateur
+lim = 200
+
+#Par commodité on pose cette variable
+i = lim +1
+
+#on initialise avec 1
+list_prime_numbers = [1]
+
+#Boucle créant la liste:
+#une première boucle parcourt n sur l'intervalle choisi
+#dans une sous-boucle, on cherche un diviseur de n parmi les nombres premiers
+#compris entre 2 et racine carrée de n
+#s'il y en a, on change la valeur test ; si la valeur test n'est pas modifiée à
+#la fin de la sous-boucle on rajoute n à la liste des nombres premiers
+for n in range(2, i):
+    test = 0
+    for p in range(2, (int(math.sqrt(n)) + 1)):
+        if p in list_prime_numbers:
+            if n % p == 0:
+                test = 1
+    if test == 0:
+        if n not in list_prime_numbers:   #pourquoi j'ai des doublons sans cette ligne ?
+            list_prime_numbers.append(n)
+
+#On ordonne
+list_prime_numbers.sort()
+
+#On crée l'index des nombres premiers avec un dictionnaire:
+index_prime_numbers = dict()
+
+for n in range(0, (len(list_prime_numbers))):
+    index_prime_numbers[n + 1] = list_prime_numbers[n]
+
+##Affichage des résultats
+#Plus tard, donner le choix entre afficher la liste brute, l'index brut ou par ligne
+#print(f"Pour vérification : index des nombres premiers -> {index_prime_numbers}")
+
+print(f"Il y a {len(index_prime_numbers)} nombres premiers compris entre 1 et {lim}.")
+print("En voici l'index :")
+for n, p in index_prime_numbers.items():
+    print(f"{n}: {p}")
+
+print(f"le {(len(list_prime_numbers) // 2)}ème nombre premier est {list_prime_numbers[((len(list_prime_numbers) // 2) - 1)]}")
+#print(f"Pour vérification: {index_prime_numbers[(len(prime_numbers) // 2)]}")
+
+
+#A faire ensuite:
+#Pour optimiser: déterminer quand index < racine de n pour choisir la meilleure boucle
+#Faire une liste des nombres premiers jumeaux (qui se trouvent à une distance de 2)
+#49_991, 49_993 et 49_999 sont premiers
+
+#Amusements:
+"""
+for i, j in index_prime_numbers.items():
+    print(f"Le nombre premier n° {i} est {j}")
+"""  
