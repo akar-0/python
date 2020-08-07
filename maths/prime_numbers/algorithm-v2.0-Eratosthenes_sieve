@@ -14,6 +14,13 @@ $ time python prime_numbers-v2.0-non_interactive.py > prime-exec.100_000bis
 real    1m13.126s (contre plus de 20 min. en v1)
 user    1m12.893s
 sys     0m0.038s
+
+$ time python prime_numbers-v2.0-non_interactive.py > prime-exec.200_000
+
+real    5m29.302s
+user    5m29.058s
+sys     0m0.015s
+
 """
 
 #module math pour la racine carrée
@@ -43,44 +50,45 @@ prime = 2
 #boucle: on poursuit le criblage tant que
 #nombre premier de référence est inférieur à la racine carrée du max à cribler
 while prime <= sqr_target:
-#Valeur test qui doit être réinitialisée pour incrémenter l'entier de réf
-    test = 0
 #Sous-boucle 1: criblage
-    for n in range(prime, ((i // prime) + 1)): #faire une shalowcopy de target pour réduire encore les possibilités
+    for n in range(prime, ((i // prime) + 1)):
         if (n * prime) in target:
             target.remove(n * prime)
 
 #Sous-boucle 2: incrémentation de l'entier de référence
-    while test == 0:
-        for x in range((prime + 1), i):            
-            if x in target:
-                prime = x        
-                test =+ 1
-                break
+    for x in range((prime + 1), i):            
+        if x in target:
+            prime = x        
+            break
 
 #print(f"{target}")
 
 
 pin = len(target)
+print(f"\n\nIl y a {pin} nombres premiers compris entre 1 et {lim}.")
 
+"""
+##résultats détaillés
 #On crée l'index des nombres premiers avec un dictionnaire:
 index_prime_numbers = dict()
 
 for n in range(0, pin):
     index_prime_numbers[n + 1] = target[n]
-    
-##Affichage des résultats
+
+
 #Plus tard, donner le choix entre afficher la liste brute, l'index brut ou par
 #ligne, etc. Voir autres idées à la fin
 
-print(f"\n\nIl y a {pin} nombres premiers compris entre 1 et {lim}.")
 print("En voici la liste indexée :")
 for n, p in index_prime_numbers.items():
     print(f"\t{n}: {p}")
 
 print(f"\nPour votre gouverne,le {(pin // 2)}ème nombre premier est"
       f" {target[((pin // 2) - 1)]}")
+"""
 
+"""
+#Calculs annexes
 #Listes des nombres premiers jumeaux (une liste de doublets et une liste brute)
 
 list_twins = []
@@ -153,8 +161,11 @@ else:
 # pour les jumeaux, comparer avec les valeurs pertinentes...
 #49_991, 49_993 et 49_999 sont premiers
 
-#Amusements:
 """
+
+
+"""
+#Amusements:
 for i, j in index_prime_numbers.items():
     print(f"Le nombre premier n° {i} est {j}")
 """  
