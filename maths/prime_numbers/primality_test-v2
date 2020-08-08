@@ -1,0 +1,204 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Aug  8 16:46:12 2020
+
+@author: akar
+
+Version notes:
+*2.0 integrates the optimized version v3.0 of prime_numbers algorithm
+(retrieves all prime numbers in a given rank.)
+"""
+
+#Test to determine whether a given integer is prime or not.
+
+#Preparations
+#import Python math library, needed to calculate square roots
+import math
+
+#import exit to easily stop the program at any required point. There must be
+#a better way...
+from sys import exit
+
+#list of even figures, for trivial tests
+even_figs = [0, 2, 4, 6, 8]
+
+#list of multiples of three inferior to 10, for trivial tests
+three_multiples = [3, 6, 9]
+
+#test flag
+flag = True
+
+#Retrieve the integer (first it will be a single characters string)
+nbr_str = input("Please give the (positive integer) number which primality "
+                "must be tested:\t")
+
+#Check if input is actually an integer
+for char in nbr_str:
+    if char not in ['0' ,'1','2' ,'3' ,'4' ,'5' , '6','7' ,'8' , '9']:
+        print("\n\nThis is not a positive integer number. The test will "
+              "not run. For your information, you may consult "
+              "https://en.wikipedia.org/wiki/Integer")
+        flag = False
+        break
+    
+if not (flag) :
+    exit()
+    
+#convert string to integer and remove possible zeros at the beginning of string
+nbr = int(nbr_str)
+nbr_str = str(nbr)
+
+#trivial tests
+#check if number is 1 or 0:
+if (nbr == 1 or nbr == 0) and (flag):
+    print(f"\n\n{nbr} is not a prime number. Are you a mathematical analphabet?")
+    flag = False
+
+#if number is 2, 5 or 7:
+if (nbr == 5 or nbr == 7 or nbr == 2) and (flag):
+    print(f"\n\n{nbr} is a prime number. Are you a mathematical analphabet?")
+    flag = False
+    
+#check if even number
+if (int(nbr_str[-1:]) in even_figs) and (flag):
+    if nbr in even_figs:
+        print(f"\n\n{nbr} is multiple of 2: {nbr} = 2 x {nbr // 2}.\n"
+              "Are you a mathematical analphabet to resort to a computer for "
+              "such a foolish thing?")
+    else:
+        print(f"\n\n{nbr} is an even number: "
+          f"\t{nbr} = 2 x {nbr // 2}.\n"
+          "That was easy to know in advance since its last figure is an even"
+          " number. Didn't you know that?")
+    flag = False
+
+#check if multiple of 5
+if (nbr_str[-1:] == '5') and (flag):
+    print(f"\n\n{nbr} is multiple of 5: {nbr} = 5 x {nbr // 5}.\n\nThat was easy "
+          "to know in advance since its last figure is 5. Didn't you know "
+          "that?")
+    flag = False
+
+if not (flag) :
+    exit()
+    
+#check if multiple of 3
+
+#Retrieve in a char list the figures that compose the integer decimal writing:
+list_chars = []
+for char in nbr_str:
+    list_chars.append(char)
+#From that list we can run the test
+#First if the integer is inferior to 10:
+if (len(list_chars) == 1):
+    if nbr == 3:
+        print("\n\n3 is a prime number. Are you a mathematical analphabet?")
+        flag = False
+    elif nbr == 9:
+        print(f"\n\n{nbr} is not a prime number, {nbr} = 3 x {nbr // 3}.\n"
+             "Are you a mathematical analphabet?")
+        flag = False
+#if the integer is superior to 9:
+else:
+        #Loop that will convert our number to a single figure
+    while len(list_chars) > 1:
+        list_figs = []
+        #Convert char list to figures list:
+        for char in list_chars:
+            list_figs.append(int(char))
+        #Calculate the sum of these figures:
+        sum_figs = sum(list_figs)
+        #convert sum to a char list:
+        strg_sum = str(sum_figs)
+        list_chars = []
+        for char in strg_sum:
+            list_chars.append(char)
+    if sum_figs in three_multiples:
+        print(f"\n\n{nbr} is multiple of three:\t {nbr} = 3 x {nbr // 3}."
+                                   "\n\nThat was an easy thing to know in"
+                                   " advance without having to resort to "
+                                   "a computer, didn't you know that?\n\n"
+                                   "For your information you may see "
+  "https://en.wikipedia.org/wiki/Divisibility_rule#Divisibility_by_3_or_9" )
+        flag = False
+
+if not (flag) :
+    exit()
+
+#Calculate square root:
+sqrt_n = int(math.sqrt(nbr))
+
+#Check if square number
+if math.sqrt(nbr) == sqrt_n :
+    print(f"\n\n{nbr} is a square number and therefor, not a prime number:\n\n\t"
+          f"{nbr} = {int(math.sqrt(nbr))} x {int(math.sqrt(nbr))}")
+    flag = False
+
+if not (flag) :
+    exit()
+
+#The program's algorithm won't work for prime numbers between 8 and 50
+#They require manual set up
+if nbr in [11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]:
+    print(f"{nbr} is a prime number!")
+    flag = False
+
+if not (flag) :
+    exit()
+
+#Non trivial (but still basic...) tests
+#To determine the primality of n, we need to get the list of prime numbers
+#between 7 and and the square root of n (we already know, thanks to trivial
+#tests, that n is not multiple of 2, 3 or 5, and therefor not of 6 either).
+#Indeed, if n is not a prime number, it has necessarily a prime factor
+#inferior to its square root. If n is not divisible by any of those prime 
+#numbers, then it is itself a prime number.
+
+#Set the interval of factors research; we can exclude even numbers immediately
+#and our number's square root since we already know it is not a square number
+target = {n for n in range(7, (sqrt_n), 2)}
+
+#Exclude multiples of 3 and 5 from the target:
+three_multiples = {n for n in range(3, sqrt_n, 3)}
+five_multiples = {n for n in range(5, sqrt_n, 5)}
+#Why does this "-" operation work ????
+target = target - three_multiples - five_multiples
+
+#We will use now 'target' as an ordered list:
+target = sorted(list(target))
+
+#The list of prime numbers is obtained via a lightly modified version of the
+#algorithm 'primality_test-v3.0.py' (based on the sieve of Eratosthenes)
+#Please refer to it for further informations
+
+#set a first reference prime number
+prime = 7
+
+sqr_target = int(math.sqrt(max(target)))
+
+#sieve's loop
+while prime <= sqr_target:
+    prime_multis = [n for n in range((2 * prime), (max(target) + 1), prime)]
+    prime_multis = set(prime_multis)    
+    target = set(target)    
+    target = target.difference(prime_multis)    
+    target = sorted(list(target))    
+    for x in range((prime + 2), nbr):
+        if x in target:
+            prime = x        
+            break    
+
+#If nbr is not a multiple of an element of target, then it's a prime number
+for n in target:
+    if nbr % n == 0:
+        print(f"\n\n{nbr} is not a prime number:"
+              f"\nIts smallest prime factor is {n}:"
+              f"\n\t{nbr} = {n} x {nbr // n}")
+        flag = False
+        break
+
+if not (flag) :
+    exit()
+
+print(f"\n\n{nbr} is a prime number!")
