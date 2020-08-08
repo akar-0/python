@@ -1,0 +1,206 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Aug  8 16:08:21 2020
+
+@author: akar
+"""
+
+#Méthode basée sur le crible d'Ératosthène
+
+#module math pour la racine carrée
+import math
+
+#Constante de Brun (pour bien faire il faudrait créer un module externe math2
+#avec d'autres constantes, etc. math ne contient que pi et e)
+brun = 1.9021605831
+
+#On demande à l'utilisateur de rentrer un rang pour faire les recherches:
+limstr = input("[version 3.0]\nNous allons chercher les nombres "
+            "premiers entre 1 et n, pour n > 2 (si le cas n = 2 vous intéresse"
+            ", vous êtes un peu teubé, mais vous pouvez toujours utiliser "
+            "la version 2.1 du programme).\nVeuillez rentrer la valeur de n "
+            ":\t")
+#faire un while pour vérifier qu'on a bien entré un nombre entier
+
+lim = int(limstr)
+
+#Par commodité on pose cette valeur dans une variable
+i = lim +1
+
+#On crée target, la liste d'entiers à cribler
+target = [n for n in range(3, i, 2)]
+
+#Par commodité, on pose cette valeur (racine carrée de target):
+sqr_target = (int(math.sqrt(lim)))
+
+#On pose la première valeur de prime (nombre premier de référence)
+prime = 3
+
+#Boucle principale; se poursuit tant que le nombre premier de référence
+#est inférieur ou égal à la racine carrée de l'ensemble qui reste à cribler 
+while prime <= sqr_target:
+#On établit la liste des multiples de prime dans target:
+    prime_multis = [n for n in range((2 * prime), (max(target) + 1), prime)]
+
+#Plutôt qu'avoir une boucle multiplicative l'idée de 3.0 est de travailler sur
+#des ensembles: on trouve la différence entre target et les multiples de prime
+    prime_multis = set(prime_multis)
+    target = set(target)
+    target = target.difference(prime_multis)
+    target = sorted(list(target))
+
+#incrémentation de l'entier de référence: l'entier immédiatement supérieur à 
+#prime est l'élément suivant prime dans la nouvelle version de target
+    for x in range((prime + 2), i):
+        if x in target:
+            prime = x        
+            break
+
+#on rajoute 2 dans target:
+target = set(target)
+target.add(2)
+target = sorted(list(target))
+
+#π(lim)
+pin = len(target)
+
+print(f"\n\nπ({lim}) = {pin} :\nIl y a {pin} nombres premiers compris entre 1 "
+      f"et {lim}.")
+
+##résultats détaillés
+#On crée l'index des nombres premiers avec un dictionnaire:
+index_prime_numbers = dict()
+
+for n in range(0, pin):
+    index_prime_numbers[n + 1] = target[n]
+
+
+#Plus tard, donner le choix entre afficher la liste brute, l'index brut ou par
+#ligne, etc. Voir autres idées à la fin
+
+print("En voici la liste indexée :")
+for n, p in index_prime_numbers.items():
+    print(f"\t{n}: {p}")
+
+print(f"\nPour votre gouverne,le {(pin // 2)}ème nombre premier est"
+      f" {target[((pin // 2) - 1)]}")
+
+#Calculs annexes
+#Listes des nombres premiers jumeaux (une liste de doublets et une liste brute)
+
+list_twins = []
+list_raw_twins = []
+
+for n in range(0, (pin - 1)):
+    if target[n + 1] - target[n] == 2:
+        list_twins.append((target[n], target[n + 1]))
+        list_raw_twins.append(target[n])
+        list_raw_twins.append(target[n + 1])
+
+#Nombre de couples
+ntwins = len(list_twins)
+
+#Si lim > 7 il faut supprimer une fois 5, inclus deux fois dans la liste brute
+#car il participe de deux doublets
+if lim > 7:
+    del list_raw_twins[1]
+
+#Affichage des données concernant les jumeaux :
+print(f"\n\nIl y a {ntwins} couples de nombres premiers jumeaux inférieurs "
+      f"ou égaux à {lim}.\n"
+      "Voici la liste de ces doublets :\n"
+      f"{list_twins}\n"
+      "\nEt voici leur liste brute :\n"
+      f"{list_raw_twins}")
+
+#Valeur de la série de leur somme inverse
+sigma_twins_inv = 0
+
+for n in range(0, (len(list_raw_twins) - 1)):
+    sigma_twins_inv = sigma_twins_inv + (1 / (list_raw_twins[n]))
+
+#calcul des erreurs et marges
+sigma_dif_brun = sigma_twins_inv - brun
+sigma_twins_error = abs((sigma_dif_brun / brun))
+
+print(f"\n\nLa somme de leur série inverse vaut: {sigma_twins_inv},\n"
+      f"soit un écart d'environ {sigma_dif_brun} "
+      f"par rappport à la constante de Brun \n(qui vaut ~= {brun}),\n"
+      f"soit {sigma_twins_error * 100} %.")
+
+#commentaires des résultats sur les jumeaux
+if sigma_twins_error > 0.4:
+    print("C'est vraiment nul !")
+elif sigma_twins_error > 0.2:
+    print("C'est pas terrible !")
+elif sigma_twins_error > 0.1:
+    print("C'est pas mal !")
+elif sigma_twins_error > 0.05:
+    print("De mieux en mieux...")
+else:
+    print("Brilliant !")
+
+
+#print(f"Pour vérification: {index_prime_numbers[(len(prime_numbers) // 2)]}")
+
+#Notes de développement
+"""
+$ time python prime_numbers-v2.0-non_interactive.py > prime-exec.100_000bis
+
+real    1m13.126s (contre plus de 20 min. en v1)
+user    1m12.893s
+sys     0m0.038s
+
+$ time python prime_numbers-v2.0-non_interactive.py > prime-exec.200_000
+
+real    5m29.302s
+user    5m29.058s
+sys     0m0.015s
+
+$ time python prime_numbers-v2.1-non-interactive.py > prime-exec.400_000
+
+real    24m29.631s
+user    24m23.744s
+sys     0m2.190s
+
+$ time python prime_numbers-v3.0-non-interactive.py > prime-exec.400_000v3
+
+real    0m1.211s
+user    0m1.177s
+sys     0m0.028s
+
+$ time python prime_numbers-v3.0-non-interactive.py > prime-exec.1_000_000
+
+real    0m5.210s
+user    0m5.124s
+sys     0m0.055s
+
+
+"""
+
+
+#A faire ensuite:
+#Rajouter un test flag pour vérifier que l'utilisateur saisit bien un entier au départ.
+#Puisque la liste jusqu'à 100_000 est déjà connue, il est inutile de refaire
+#ces calculs, il faut les reprendre pour calculer d'autres valeurs et agrandir
+# la liste.
+# Calculer les temps de calcul !
+#Faire une liste des nombres premiers jumeaux (qui se trouvent à une distance de 2)
+#Enregistrer toutes les valeurs calculées dans un fichier (ou seulement conserver la plus grosse)
+#ou mieux: laisser le choix à l'utilisateur, en lui demandant de saisir un
+# nom de fichier tout en en proposant un par défaut
+#laisser à l'utilisateur la possibilité de parcourir la liste / l'index 
+#gardé dans un fichier temporaire
+#Faire des statistiques + graphiques, sur la somme des nbs premiers, leur série inverse, idem
+# pour les jumeaux, comparer avec les valeurs pertinentes...
+# π(x) * log(x) / x -> 1
+#49_991, 49_993 et 49_999 sont premiers
+
+
+
+"""
+#Amusements:
+for i, j in index_prime_numbers.items():
+    print(f"Le nombre premier n° {i} est {j}")
+"""  
