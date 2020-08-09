@@ -65,24 +65,21 @@ def primality_test(number):
                 return (False, sqrt_n)
             
             else:
-                target = {n for n in range(7, (sqrt_n), 2)}
-                three_multiples = {n for n in range(3, sqrt_n, 3)}
-                five_multiples = {n for n in range(5, sqrt_n, 5)}
-                target = target - three_multiples - five_multiples
+                target = {n for n in range(7, (sqrt_n), 2)} - \
+                         {n for n in range(3, sqrt_n, 3)} - \
+                         {n for n in range(5, sqrt_n, 5)}
                 p = 7
                 sqr_target = int(sqrt(max(target)))
                 while p <= sqr_target:
-                    target = set(target)
                     p_multis = {n for n in range((2 * p), (max(target) + 1), p)}
                     target = target.difference(p_multis)
-                    target = sorted(list(target)) 
-                    for x in target:
+                    for x in sorted(target):
                         if x > p:
                             p = x
                             break
-                target = sorted(list(target)) #is it necessary in any case?? seems that, casually, not... 
+                target = sorted(target) #unnecessary?
                 for n in target:
                     if nbr % n == 0:
                         return (False, n)
-                        break #required in order to give up the if loop?
+                        break
                 return True
