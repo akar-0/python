@@ -21,8 +21,8 @@ def primality_test(number):
     -If number is not a prime number, returns a tuple of two elements:
         - False
         - If number is a composite number, the second element of the tuple is
-        its smallest prime number; if number is 0 or 1, the second element of
-        the tuple is boolean value False.
+        its smallest prime factor; if number is 0 or 1, the second element of
+        the tuple is False.
    
     """
     
@@ -32,15 +32,13 @@ def primality_test(number):
 #A test to check if the input is actually an integer should be run first
 
     from math import sqrt
-    even_figs = {0, 2, 4, 6, 8}
-    three_multiples = {3, 6, 9}
     nbr = int(number)
     nbr_str = str(nbr)
     if (nbr == 1 or nbr == 0):
         return (False, None)
     elif nbr in [2, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]:
         return True
-    elif (int(nbr_str[-1:]) in even_figs):
+    elif (int(nbr_str[-1:]) in {0, 2, 4, 6, 8}):
         return(False, 2)
     elif (nbr_str[-1:] == '5'):
         return(False, 5)
@@ -59,7 +57,7 @@ def primality_test(number):
             list_chars = []
             for char in strg_sum:
                 list_chars.append(char)
-        if sum_figs in three_multiples:
+        if sum_figs in {3, 6, 9}:
             return (False, 3)
         else:
             sqrt_n = int(sqrt(nbr))
