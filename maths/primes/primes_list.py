@@ -16,23 +16,20 @@ def primes_list(rank):
     -------
     A list retrieving:
         pin: (integer) amount of prime numbers inferior or equal to rank
-        target: (integers ordered list) prime numbers inferior or equal to rank
+        primes_list: (integers ordered list) prime numbers inferior or equal to rank
 
     """
     from math import sqrt
     prime = 3
     target = {n for n in range(3, (rank + 1), 2)}
     while prime <= sqrt(rank):
-        prime_multis = {n for n in\
-                        range((2 * prime), (max(target) + 1), prime)}
-        target = target.difference(prime_multis)
-        target = sorted(list(target))
-        for x in target:
+        target = target.difference({n for n in\
+                        range((2 * prime), (max(target) + 1), prime)})
+        for x in sorted(target):
             if x > prime:
                 prime = x
-                target = set(target)
                 break
     target.add(2)
     target = sorted(list(target))
     pin = len(target)
-    return [pin, target]
+    return [pin, primes_list]
