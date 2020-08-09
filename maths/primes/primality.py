@@ -38,7 +38,7 @@ def primality_test(number):
     nbr_str = str(nbr)
     if (nbr == 1 or nbr == 0):
         return (False, None)
-    elif (nbr == 5 or nbr == 7 or nbr == 2):
+    elif nbr in [2, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]:
         return True
     elif (int(nbr_str[-1:]) in even_figs):
         return(False, 2)
@@ -46,8 +46,6 @@ def primality_test(number):
         return(False, 5)
     elif (nbr == 9):
         return(False, 3)
-    elif nbr in [11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]:
-        return True
     else:
         list_chars = []
         for char in nbr_str:
@@ -67,6 +65,7 @@ def primality_test(number):
             sqrt_n = int(sqrt(nbr))
             if sqrt(nbr) == sqrt_n :
                 return (False, sqrt_n)
+            
             else:
                 target = {n for n in range(7, (sqrt_n), 2)}
                 three_multiples = {n for n in range(3, sqrt_n, 3)}
@@ -90,5 +89,3 @@ def primality_test(number):
                         break #required in order to give up the if loop?
                     else:
                         return True
-
-                    
