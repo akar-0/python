@@ -39,11 +39,11 @@ def primality_test(number):
     elif nbr in [2, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]:
         return True
     elif (int(nbr_str[-1:]) in {0, 2, 4, 6, 8}):
-        return(False, 2)
+        return (False, 2)
     elif (nbr_str[-1:] == '5'):
-        return(False, 5)
+        return (False, 5)
     elif (nbr == 9):
-        return(False, 3)
+        return (False, 3)
     else:
         list_chars = []
         for char in nbr_str:
@@ -85,5 +85,4 @@ def primality_test(number):
                     if nbr % n == 0:
                         return (False, n)
                         break #required in order to give up the if loop?
-                    else:
-                        return True
+                return True
