@@ -67,7 +67,6 @@ def primality_test(number):
             sqrt_n = int(sqrt(nbr))
             if sqrt(nbr) == sqrt_n :
                 return (False, sqrt_n)
-            
             else:
                 target = {n for n in range(7, (sqrt_n), 2)}
                 three_multiples = {n for n in range(3, sqrt_n, 3)}
