@@ -20,3 +20,15 @@ def fib(n):
         L.append(helper(n)[1])
     if n>0 or n%2: return  L[abs(n)]
     else: return -L[abs(n)]
+
+    
+def fib(n):
+    if n < 0: return fib(-n) if n & 1 else -fib(-n)
+    if n == 0: return 0
+    a, b, p, q = 1, 0, 0, 1
+    while n > 0:
+        if n & 1 > 0:
+            a, b, n = a * p + a * q + b * q, a * q + b * p, n - 1
+        else:
+            p, q, n = p * p + q * q, 2 * p * q + q * q, n // 2
+    return b
